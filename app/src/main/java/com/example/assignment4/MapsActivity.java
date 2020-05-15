@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -94,9 +95,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if(list.size() > 0) {
             Address address = list.get(0);
-            Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
 
-            //TODO: add marker for home
+            LatLng home = new LatLng(address.getLatitude(), address.getLongitude());
+            moveCamera(home, DEFAULT_ZOOM);
         }
     }
 
@@ -111,21 +112,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-//        Toast.makeText(this, "MapsActvity is ready.", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
 
         // Add a marker to SCU and move the camera
-//        LatLng scu = new LatLng(-37.35, -121.94);
-//        mMap.addMarker(new MarkerOptions().position(scu).title("Marker in SCU"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(scu));
-        if (mLocationPermissionsGranted) {
+        LatLng home = new LatLng(37.35, -121.94);
+        moveCamera(home, DEFAULT_ZOOM);
+        /*if (mLocationPermissionsGranted) {
             //TODO: create update button that updates the marker
             getDeviceLocation();
 
             mMap.setMyLocationEnabled(true);
             init();
-            //mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        }
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        }*/
     }
 
     private void getDeviceLocation() {
@@ -157,6 +156,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void moveCamera(LatLng latLng, float zoom) {
         Log.d(TAG, "Moving camera to lat: " + latLng.latitude + " lng: " + latLng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        mMap.addMarker(new MarkerOptions().position(latLng).title("Home"));
     }
 
     private void getLocationPermission() {
