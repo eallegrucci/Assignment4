@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +29,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import java.io.IOError;
+import java.io.IOException;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -54,6 +62,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        init();
     }
 
     private void init() {
@@ -64,11 +74,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 actionId == EditorInfo.IME_ACTION_DONE ||
                 event.getAction() == KeyEvent.ACTION_DOWN ||
                 event.getAction() == KeyEvent.KEYCODE_ENTER) {
-                    //TODO: execute method for searching and add marker for home
+                    homeLocate();
                 }
                 return false;
             }
         });
+    }
+
+    private void homeLocate() {
+        String homeStr = mHomeText.getText().toString();
+
+        Geocoder g = new Geocoder(MapsActivity.this);
+        List<Address> list = new ArrayList<>();
+        try {
+            list = g.getFromLocationName(homeStr, 1);
+        } catch(IOException e) {
+            Log.e(TAG, "geoLocate: IOException: " + e.getMessage());
+        }
+
+        if(list.size() > 0) {
+            Address address = list.get(0);
+            Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
+
+            //TODO: add marker for home
+        }
     }
 
     /**
@@ -85,7 +114,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        Toast.makeText(this, "MapsActvity is ready.", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
+        // Add a marker to SCU and move the camera
 //        LatLng scu = new LatLng(-37.35, -121.94);
 //        mMap.addMarker(new MarkerOptions().position(scu).title("Marker in SCU"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(scu));
@@ -94,6 +123,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             getDeviceLocation();
 
             mMap.setMyLocationEnabled(true);
+            init();
             //mMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
     }
