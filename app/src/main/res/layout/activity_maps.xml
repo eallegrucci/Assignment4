@@ -46,4 +46,15 @@
 
     </RelativeLayout>
 
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/home"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/ic_updateLoc"
+        android:src="@drawable/ic_refresh"/>
+
 </RelativeLayout>
