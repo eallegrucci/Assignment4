@@ -11,6 +11,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -62,8 +63,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         mHomeText = (EditText) findViewById(R.id.homeSearch);
+        mHomeText.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        mHomeText.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
         mUpdateLoc = (ImageView) findViewById(R.id.ic_updateLoc);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -78,9 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(actionId == EditorInfo.IME_ACTION_SEARCH ||
                 actionId == EditorInfo.IME_ACTION_DONE ||
                 event.getAction() == KeyEvent.ACTION_DOWN ||
-                event.getAction() == KeyEvent.KEYCODE_ENTER ||
-                event.getAction() == KeyEvent.KEYCODE_BUTTON_SELECT ||
-                event.getAction() == KeyEvent.KEYCODE_SEARCH) {
+                event.getAction() == KeyEvent.KEYCODE_ENTER) {
                     homeLocate();
                 }
                 return false;
@@ -127,7 +127,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng home = new LatLng(37.35, -121.94);
         moveCamera(home, DEFAULT_ZOOM);
         if (mLocationPermissionsGranted) {
-            //getDeviceLocation();
+            getDeviceLocation();
             mMap.setMyLocationEnabled(true);
             init();
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
